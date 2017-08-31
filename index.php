@@ -79,78 +79,99 @@
             <div class="row">
                 <div class="col-lg-12">
 					<?php
-						$count = 0;
-						$content = [];
+                        if(isset($_COOKIE['password']) && $_COOKIE['password']=="p4ssw0rd") {
+                            $count = 0;
+                            $content = [];
 
-                        $directory_content = array_diff(scandir(HTTPD_VHOST_CONF_PATH), array('..', '.'));
-                        foreach ($directory_content as $idx => $file) {
-                            $httpd_vhosts_conf = explode("\n", file_get_contents(HTTPD_VHOST_CONF_PATH . $file));
-                            foreach ($httpd_vhosts_conf as $key => $value) {
-                                $value = trim($value);
-                                if (!startsWith($value, "#") && $value != "") {
-                                    if (startsWith($value, "</")) {
-                                        $count++;
-                                    } else if (startsWith($value, "<")) { // Save port, but it is unless
-                                        $line = explode(' ', str_replace(['<', '>'], '', $value));
-                                        $line_content = explode(":", $line[1]);
-                                        $content[$count][$line[0]] = array(
-                                            'ip' => $line_content[0],
-                                            'port' => $line_content[1]
-                                        );
-                                    } else {
-                                        $line = explode(' ', $value);
-                                        $content[$count][$line[0]] = $line[1];
+                            $directory_content = array_diff(scandir(HTTPD_VHOST_CONF_PATH), array('..', '.'));
+                            foreach ($directory_content as $idx => $file) {
+                                $httpd_vhosts_conf = explode("\n", file_get_contents(HTTPD_VHOST_CONF_PATH . $file));
+                                foreach ($httpd_vhosts_conf as $key => $value) {
+                                    $value = trim($value);
+                                    if (!startsWith($value, "#") && $value != "") {
+                                        if (startsWith($value, "</")) {
+                                            $count++;
+                                        } else if (startsWith($value, "<")) { // Save port, but it is unless
+                                            $line = explode(' ', str_replace(['<', '>'], '', $value));
+                                            $line_content = explode(":", $line[1]);
+                                            $content[$count][$line[0]] = array(
+                                                'ip' => $line_content[0],
+                                                'port' => $line_content[1]
+                                            );
+                                        } else {
+                                            $line = explode(' ', $value);
+                                            $content[$count][$line[0]] = $line[1];
+                                        }
+
+                                        // Print it!
+                                        // $value = str_replace("<", "&lt;", $value);
+                                        // $value = str_replace(">", "&gt;", $value);
+                                        // echo "Key: " . $key . "; Value: " . $value . "<br />";
                                     }
-
-                                    // Print it!
-                                    // $value = str_replace("<", "&lt;", $value);
-                                    // $value = str_replace(">", "&gt;", $value);
-                                    // echo "Key: " . $key . "; Value: " . $value . "<br />";
                                 }
                             }
-                        }
-						// echo '<pre>';
-						// print_r($content);
-						// echo '</pre>';
+                            // echo '<pre>';
+                            // print_r($content);
+                            // echo '</pre>';
 
-                        $count = 0;
-						
-						echo '<div class="card-group">';
-						foreach($content as $idx => $values)
-						{
-						    if(isset($values['DocumentRoot'])) {
-                                ?>
-                                <div class="card col-md-4">
-                                    <div class="card-block">
-                                        <h4 class="card-title">
-                                            <?php
-                                            if(isset($values['ServerAlias']))
-                                                echo $values['ServerAlias'];
-                                            else if(isset($values['ServerName']))
-                                                echo $values['ServerName'];
-                                            else if(isset($values['ServerAdmin']))
-                                                echo $values['ServerAdmin'];
-                                            ?>
-                                        </h4>
-                                        <p class="card-text">
+                            $count = 0;
 
-                                        </p>
-                                        <pre>DocumentRoot:<br />  <?= isset($values['DocumentRoot']) ? $values['DocumentRoot'] : ''; ?></pre>
-                                        <pre>VirtualHost:<br />  <?= isset($values['VirtualHost']) ? join(':', $values['VirtualHost']) : ''; ?></pre>
-                                        <a href="http://<?= isset($values['ServerName']) ? $values['ServerName'] : ''; ?>" target="_blank" class="btn btn-primary pull-right">
-                                            Open <i class="fa fa-external-link" style="position: relative; top: -3px; font-size: 80%;" aria-hidden="true"></i>
-                                        </a>
-                                        <div class="clearfix"></div>
+                            echo '<div class="card-group">';
+                            foreach($content as $idx => $values)
+                            {
+                                if(isset($values['DocumentRoot'])) {
+                                    ?>
+                                    <div class="card col-md-4">
+                                        <div class="card-block">
+                                            <h4 class="card-title">
+                                                <?php
+                                                if(isset($values['ServerAlias']))
+                                                    echo $values['ServerAlias'];
+                                                else if(isset($values['ServerName']))
+                                                    echo $values['ServerName'];
+                                                else if(isset($values['ServerAdmin']))
+                                                    echo $values['ServerAdmin'];
+                                                ?>
+                                            </h4>
+                                            <p class="card-text">
+
+                                            </p>
+                                            <pre>DocumentRoot:<br />  <?= isset($values['DocumentRoot']) ? $values['DocumentRoot'] : ''; ?></pre>
+                                            <pre>VirtualHost:<br />  <?= isset($values['VirtualHost']) ? join(':', $values['VirtualHost']) : ''; ?></pre>
+                                            <a href="http://<?= isset($values['ServerName']) ? $values['ServerName'] : ''; ?>" target="_blank" class="btn btn-primary pull-right">
+                                                Open <i class="fa fa-external-link" style="position: relative; top: -3px; font-size: 80%;" aria-hidden="true"></i>
+                                            </a>
+                                            <div class="clearfix"></div>
+                                        </div>
                                     </div>
-                                </div>
-                                <?php
-                                if($count%3==2)
-                                    echo '</div><div class="card-group">';
+                                    <?php
+                                    if($count%3==2)
+                                        echo '</div><div class="card-group">';
 
-                                $count++;
+                                    $count++;
+                                }
                             }
-						}
-						echo '</div>';
+                            echo '</div>';
+                        }
+                        else {
+                            ?>
+                                <div class="form-group">
+                                    <label for="password"></label>
+                                    <input type="password" id="password" name="password" value="" class="form-control" placeholder="Input password">
+                                </div>
+                                <div class="form-group">
+                                    <input type="button" value="Go" class="btn btn-success">
+                                </div>
+                            <script>
+                                $(document)
+                                    .on('click', 'input[type=button]', function(e) {
+                                        e.preventDefault();
+
+                                        document.cookie = "password=" + $('#password').val();
+                                    });
+                            </script>
+                            <?php
+                        }
 					?>
                 </div>
             </div>
