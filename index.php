@@ -80,13 +80,42 @@
 <section id="list">
     <div class="container">
         <div class="row">
-            <div id="filter-list" class="col-lg-12">
+            <?php
+                if(isset($_COOKIE['password']) && $_COOKIE['password']=="p4ssw0rd") {
+            ?>
+                <div id="filter-list" class="col-lg-12">
 
-            </div>
-            <hr /><br />
-            <div id="site-list" class="col-lg-12">
+                </div>
+                <hr /><br />
+                <div id="site-list" class="col-lg-12">
 
-            </div>
+                </div>
+            <?php
+                }
+                else {
+            ?>
+                <div class="form-group">
+                    <label for="password"></label>
+                    <input type="password" id="password" name="password" value="" class="form-control" placeholder="Input password">
+                </div>
+                <div class="form-group">
+                    <input type="button" value="Go" class="btn btn-success col-md-offset-4 col-md-4">
+                </div>
+                <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+                        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+                        crossorigin="anonymous"></script>
+                <script>
+                    $(document)
+                        .on('click', 'input[type=button]', function(e) {
+                            e.preventDefault();
+
+                            document.cookie = "password=" + $('#password').val();
+                            location.reload();
+                        });
+                </script>
+            <?php
+                }
+            ?>
         </div>
     </div>
 </section>
@@ -106,6 +135,9 @@
 <!-- Bootstrap Core JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
+<?php
+    if(isset($_COOKIE['password']) && $_COOKIE['password']=="p4ssw0rd") {
+?>
 <script>
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
@@ -209,6 +241,9 @@
             });
     });
 </script>
+<?php
+    }
+?>
 </body>
 
 </html>
