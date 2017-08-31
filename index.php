@@ -103,15 +103,17 @@
                                     }
 
                                     // Print it!
-                                    $value = str_replace("<", "&lt;", $value);
-                                    $value = str_replace(">", "&gt;", $value);
-                                    echo "Key: " . $key . "; Value: " . $value . "<br />";
+                                    // $value = str_replace("<", "&lt;", $value);
+                                    // $value = str_replace(">", "&gt;", $value);
+                                    // echo "Key: " . $key . "; Value: " . $value . "<br />";
                                 }
                             }
                         }
 						// echo '<pre>';
 						// print_r($content);
 						// echo '</pre>';
+
+                        $count = 0;
 						
 						echo '<div class="card-group">';
 						foreach($content as $idx => $values)
@@ -139,8 +141,10 @@
 									</div>
 								</div>
 							<?php
-							if($idx%3==2)
+							if($count%3==2)
 								echo '</div><div class="card-group">';
+
+							$count++;
 						}
 						echo '</div>';
 					?>
