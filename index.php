@@ -162,13 +162,15 @@
                                 <div class="form-group">
                                     <input type="button" value="Go" class="btn btn-success">
                                 </div>
+                            <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+                                    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+                                    crossorigin="anonymous"></script>
                             <script>
                                 $(document)
                                     .on('click', 'input[type=button]', function(e) {
                                         e.preventDefault();
 
                                         document.cookie = "password=" + $('#password').val();
-                                        console.log(document.cookie);
                                     });
                             </script>
                             <?php
