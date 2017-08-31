@@ -168,6 +168,7 @@
                                         e.preventDefault();
 
                                         document.cookie = "password=" + $('#password').val();
+                                        console.log(document.cookie);
                                     });
                             </script>
                             <?php
