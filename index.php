@@ -6,8 +6,6 @@
 	 * XAMPP and Windows only
 	 *
 	 */
-
-	define("HTTPD_VHOST_CONF_PATH", "C:/xampp/apache/conf/extra/httpd-vhosts.conf");
 ?>
 
 
@@ -41,6 +39,11 @@
 </head>
 
 <body>
+    <style>
+        #site-list .card:nth-child(3n + 1) {
+            clear: left;
+        }
+    </style>
 
     <!-- Navigation -->
     <nav class="navbar navbar-default" 	 role="navigation">
@@ -77,72 +80,12 @@
     <section id="list">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-					<?php
-						$count = 0;
-						$content = [];
-					
-						$httpd_vhosts_conf = explode("\n", file_get_contents(HTTPD_VHOST_CONF_PATH));
-						foreach($httpd_vhosts_conf as $key => $value) {
-							$value = trim($value);
-							if(!startsWith($value, "#") && $value!="") {
-								if(startsWith($value, "</")) {
-									$count++;
-								}
-								else if(startsWith($value, "<")) { // Save port, but it is unless
-									$line = explode(' ', str_replace(['<', '>'], '', $value));
-									$line_content = explode(":", $line[1]);
-									$content[$count][$line[0]] = array(
-										'ip' => $line_content[0],
-										'port' => $line_content[1]
-									);
-								}
-								else {
-									$line = explode(' ', $value);
-									$content[$count][$line[0]] = $line[1];
-								}
+                <div id="filter-list" class="col-lg-12">
 
-								// Print it!
-								// $value = str_replace("<", "&lt;", $value);
-								// $value = str_replace(">", "&gt;", $value);
-								// echo "Key: " . $key . "; Value: " . $value . "<br />";
-							}
-						}
-						// echo '<pre>';
-						// print_r($content);
-						// echo '</pre>';
-						
-						echo '<div class="card-group">';
-						foreach($content as $idx => $values)
-						{
-							?>
-								<div class="card col-md-4">
-									<div class="card-block">
-										<h4 class="card-title">
-											<?php
-												if(isset($values['ServerAlias']))
-													echo $values['ServerAlias'];
-												else if(isset($values['ServerAdmin']))
-													echo $values['ServerAdmin'];
-											?>
-										</h4>
-										<p class="card-text">
-											
-										</p>
-										<pre>DocumentRoot:<br />  <?= isset($values['DocumentRoot']) ? $values['DocumentRoot'] : ''; ?></pre>
-										<pre>VirtualHost:<br />  <?= isset($values['VirtualHost']) ? join(':', $values['VirtualHost']) : ''; ?></pre>
-										<a href="http://<?= isset($values['ServerAdmin']) ? $values['ServerAdmin'] : ''; ?>" target="_blank" class="btn btn-primary pull-right">
-											Open <i class="fa fa-external-link" style="position: relative; top: -3px; font-size: 80%;" aria-hidden="true"></i>
-										</a>
-										<div class="clearfix"></div>
-									</div>
-								</div>
-							<?php
-							if($idx%3==2)
-								echo '</div><div class="card-group">';
-						}
-						echo '</div>';
-					?>
+                </div>
+                <hr /><br />
+                <div id="site-list" class="col-lg-12">
+
                 </div>
             </div>
         </div>
@@ -165,16 +108,120 @@
 
 	<script>
 		$(document).ready(function(){
-			$('[data-toggle="tooltip"]').tooltip(); 
+			$('[data-toggle="tooltip"]').tooltip();
+
+			$.get("get_info.php", function(data) {
+			    $.each(data, function(idx, site) {
+			        var serverDomains = site.ServerName.split('.').reverse();
+
+                    $card = $('' +
+                        '<div class="card col-md-4" data-filters="' + getFilters(serverDomains, serverDomains.length-1) + '">' +
+                        '   <div class="card-block">' +
+                        '       <h4 class="card-title">' +
+                        '           ' + (site.ServerAlias ? site.ServerAlias : site.ServerName) +
+                        '       </h4>' +
+                        '       <p class="card-text">' +
+                        '' +
+                        '       </p>' +
+                        '       <pre>DocumentRoot:<br />' +
+                        '           ' + site.DocumentRoot +
+                        '       </pre>' +
+                        '       <pre>VirtualHost:<br />' +
+                        '           ' + site.VirtualHost.ip + ":" + site.VirtualHost.port +
+                        '       </pre>' +
+                        '       <pre>ServerName:<br />' +
+                        '           ' + site.ServerName +
+                        '       </pre>' +
+                        '       <a href="http://' + site.ServerName + '" target="_blank" class="btn btn-primary pull-right">' +
+                        '           Open <i class="fa fa-external-link" style="position: relative; top: -3px; font-size: 80%;" aria-hidden="true"></i>' +
+                        '       </a>' +
+                        '       <div class="clearfix"></div>' +
+                        '   </div>' +
+                        '</div>' +
+                        '');
+
+                    serverDomains = site.ServerName.split('.');
+                    if($(':contains("' + site.DocumentRoot + '")').length == 0) {
+                        $('#site-list')
+                            .append($card);
+
+                        serverDomains = serverDomains.reverse();
+
+                        $.each(serverDomains, function(idx, part) {
+                            if($('#filter-list .row[data-level=' + idx + '] button[value=' + part + ']').length == 0) {
+                                if($('#filter-list .row[data-level=' + idx + ']').length == 0) {
+                                    $('#filter-list')
+                                        .append($('' +
+                                            '<div class="row hidden" data-level="' + idx + '">' +
+                                            '   <div class="col-md-2" style="padding: 8px 0px;">Level ' + idx + '</div>' +
+                                            '   <div class="col-md-10 domain-list">' +
+                                            (idx == 0 ?
+                                            '       <div class="col-md-2">' +
+                                            '           <button class="btn btn-info col-md-12" data-current-level="' + idx + '" style="margin-bottom: 4px;">' +
+                                            '               All' +
+                                            '           </button>' +
+                                            '       </div>' : "") +
+                                            '   </div>' +
+                                            '</div>')
+                                        );
+                                }
+                                $('#filter-list .row[data-level=' + idx + '] div.domain-list')
+                                    .append('' +
+                                        '<div class="col-md-2">' +
+                                        '   <button class="btn btn-info col-md-12" data-current-level="' + idx + '" data-filters="' + getFilters(serverDomains, idx) + '" value="' + part + '" style="margin-bottom: 4px;">' +
+                                        '       ' + part + '' +
+                                        '   </button>' +
+                                        '</div>');
+                            }
+                        });
+                    }
+                    $('#filter-list .row[data-level=0]').removeClass('hidden');
+                });
+            }, "json");
+            function getFilters(domainPart, max) {
+                return domainPart.slice(0, max+1).join(' ');
+            }
+            $(document)
+                .on('click', '#filter-list button', function(e) {
+                    e.preventDefault();
+
+                    $('#filter-list .row, #filter-list button')
+                        .addClass('hidden');
+
+                    $('#site-list .card')
+                        .removeClass('hidden');
+
+                    var currentLevel = $(this).attr('data-current-level');
+
+                    if($(this).is('[data-filters]')) {
+                        var filters = $(this).attr('data-filters');
+                        var filters_list = filters.split(' ');
+                        filters_list.push("");
+
+                        var filterToShow = "";
+                        $.each(filters_list, function(idx, filter) {
+                            filterToShow += filter;
+
+                            // Update button list
+                            $('.row[data-level="' + (idx+1) + '"] button[data-filters^="' + filterToShow + '"]').removeClass('hidden');
+                            $('.row[data-level="' + idx + '"]').removeClass('hidden');
+
+                            filterToShow += ' ';
+                        });
+                        // Hide not selected cards
+                        filterToShow = filterToShow.substring(0, filterToShow.length - 2);
+                        console.log($('#site-list .card[data-filters^="' + filterToShow + '"]'));
+                        $('#site-list .card:not([data-filters^="' + filterToShow + '"])').addClass('hidden');
+                    }
+                    $('#filter-list .row:first, #filter-list .row:first button').removeClass('hidden');
+
+                    $lastLine = $('.row[data-level="' + (currentLevel*1+1) + '"]');
+                    if($lastLine.find('button:not(.hidden)').length==0) {
+                        $lastLine.addClass('hidden');
+                    }
+                });
 		});
 	</script>
 </body>
 
 </html>
-<?php
-	function startsWith($haystack, $needle)
-	{
-		 $length = strlen($needle);
-		 return (substr($haystack, 0, $length) === $needle);
-	}
-?>
