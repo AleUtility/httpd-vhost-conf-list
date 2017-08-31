@@ -103,9 +103,9 @@
                                     }
 
                                     // Print it!
-                                    // $value = str_replace("<", "&lt;", $value);
-                                    // $value = str_replace(">", "&gt;", $value);
-                                    // echo "Key: " . $key . "; Value: " . $value . "<br />";
+                                    $value = str_replace("<", "&lt;", $value);
+                                    $value = str_replace(">", "&gt;", $value);
+                                    echo "Key: " . $key . "; Value: " . $value . "<br />";
                                 }
                             }
                         }
