@@ -125,6 +125,8 @@
 											<?php
 												if(isset($values['ServerAlias']))
 													echo $values['ServerAlias'];
+												else if(isset($values['ServerName']))
+													echo $values['ServerName'];
 												else if(isset($values['ServerAdmin']))
 													echo $values['ServerAdmin'];
 											?>
@@ -134,7 +136,7 @@
 										</p>
 										<pre>DocumentRoot:<br />  <?= isset($values['DocumentRoot']) ? $values['DocumentRoot'] : ''; ?></pre>
 										<pre>VirtualHost:<br />  <?= isset($values['VirtualHost']) ? join(':', $values['VirtualHost']) : ''; ?></pre>
-										<a href="http://<?= isset($values['ServerAdmin']) ? $values['ServerAdmin'] : ''; ?>" target="_blank" class="btn btn-primary pull-right">
+										<a href="http://<?= isset($values['ServerName']) ? $values['ServerName'] : ''; ?>" target="_blank" class="btn btn-primary pull-right">
 											Open <i class="fa fa-external-link" style="position: relative; top: -3px; font-size: 80%;" aria-hidden="true"></i>
 										</a>
 										<div class="clearfix"></div>
