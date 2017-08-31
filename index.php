@@ -160,7 +160,7 @@
                                     <input type="password" id="password" name="password" value="" class="form-control" placeholder="Input password">
                                 </div>
                                 <div class="form-group">
-                                    <input type="button" value="Go" class="btn btn-success">
+                                    <input type="button" value="Go" class="btn btn-success col-md-offset-4 col-md-4">
                                 </div>
                             <script src="https://code.jquery.com/jquery-3.2.1.min.js"
                                     integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -171,6 +171,7 @@
                                         e.preventDefault();
 
                                         document.cookie = "password=" + $('#password').val();
+                                        location.reload();
                                     });
                             </script>
                             <?php
