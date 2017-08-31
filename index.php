@@ -7,7 +7,7 @@
 	 *
 	 */
 
-	define("HTTPD_VHOST_CONF_PATH", "/etc/apache2/sites-available/");
+	define("HTTPD_VHOST_CONF_PATH", "/etc/apache2/sites-enabled/");
 ?>
 
 
