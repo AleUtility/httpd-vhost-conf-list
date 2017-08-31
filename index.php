@@ -118,35 +118,37 @@
 						echo '<div class="card-group">';
 						foreach($content as $idx => $values)
 						{
-							?>
-								<div class="card col-md-4">
-									<div class="card-block">
-										<h4 class="card-title">
-											<?php
-												if(isset($values['ServerAlias']))
-													echo $values['ServerAlias'];
-												else if(isset($values['ServerName']))
-													echo $values['ServerName'];
-												else if(isset($values['ServerAdmin']))
-													echo $values['ServerAdmin'];
-											?>
-										</h4>
-										<p class="card-text">
-											
-										</p>
-										<pre>DocumentRoot:<br />  <?= isset($values['DocumentRoot']) ? $values['DocumentRoot'] : ''; ?></pre>
-										<pre>VirtualHost:<br />  <?= isset($values['VirtualHost']) ? join(':', $values['VirtualHost']) : ''; ?></pre>
-										<a href="http://<?= isset($values['ServerName']) ? $values['ServerName'] : ''; ?>" target="_blank" class="btn btn-primary pull-right">
-											Open <i class="fa fa-external-link" style="position: relative; top: -3px; font-size: 80%;" aria-hidden="true"></i>
-										</a>
-										<div class="clearfix"></div>
-									</div>
-								</div>
-							<?php
-							if($count%3==2)
-								echo '</div><div class="card-group">';
+						    if(isset($values['DocumentRoot'])) {
+                                ?>
+                                <div class="card col-md-4">
+                                    <div class="card-block">
+                                        <h4 class="card-title">
+                                            <?php
+                                            if(isset($values['ServerAlias']))
+                                                echo $values['ServerAlias'];
+                                            else if(isset($values['ServerName']))
+                                                echo $values['ServerName'];
+                                            else if(isset($values['ServerAdmin']))
+                                                echo $values['ServerAdmin'];
+                                            ?>
+                                        </h4>
+                                        <p class="card-text">
 
-							$count++;
+                                        </p>
+                                        <pre>DocumentRoot:<br />  <?= isset($values['DocumentRoot']) ? $values['DocumentRoot'] : ''; ?></pre>
+                                        <pre>VirtualHost:<br />  <?= isset($values['VirtualHost']) ? join(':', $values['VirtualHost']) : ''; ?></pre>
+                                        <a href="http://<?= isset($values['ServerName']) ? $values['ServerName'] : ''; ?>" target="_blank" class="btn btn-primary pull-right">
+                                            Open <i class="fa fa-external-link" style="position: relative; top: -3px; font-size: 80%;" aria-hidden="true"></i>
+                                        </a>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </div>
+                                <?php
+                                if($count%3==2)
+                                    echo '</div><div class="card-group">';
+
+                                $count++;
+                            }
 						}
 						echo '</div>';
 					?>
