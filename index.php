@@ -143,66 +143,68 @@
         $('[data-toggle="tooltip"]').tooltip();
         $.get("get_info.php", function(data) {
             $.each(data, function(idx, site) {
-                var serverDomains = site.ServerName.split('.').reverse();
-                $card = $('' +
-                    '<div class="card col-md-4" data-filters="' + getFilters(serverDomains, serverDomains.length-1) + '">' +
-                    '   <div class="card-block">' +
-                    '       <h4 class="card-title">' +
-                    '           ' + (site.ServerAlias ? site.ServerAlias : site.ServerName) +
-                    '       </h4>' +
-                    '       <p class="card-text">' +
-                    '' +
-                    '       </p>' +
-                    '       <pre>DocumentRoot:<br />' +
-                    '           ' + site.DocumentRoot +
-                    '       </pre>' +
-                    '       <pre>VirtualHost:<br />' +
-                    '           ' + site.VirtualHost.ip + ":" + site.VirtualHost.port +
-                    '       </pre>' +
-                    '       <pre>ServerName:<br />' +
-                    '           ' + site.ServerName +
-                    '       </pre>' +
-                    '       <a href="http://' + site.ServerName + '" target="_blank" class="btn btn-primary pull-right">' +
-                    '           Open <i class="fa fa-external-link" style="position: relative; top: -3px; font-size: 80%;" aria-hidden="true"></i>' +
-                    '       </a>' +
-                    '       <div class="clearfix"></div>' +
-                    '   </div>' +
-                    '</div>' +
-                    '');
-                serverDomains = site.ServerName.split('.');
-                if($(':contains("' + site.DocumentRoot + '")').length == 0) {
-                    $('#site-list')
-                        .append($card);
-                    serverDomains = serverDomains.reverse();
-                    $.each(serverDomains, function(idx, part) {
-                        if($('#filter-list .row[data-level=' + idx + '] button[value=' + part + ']').length == 0) {
-                            if($('#filter-list .row[data-level=' + idx + ']').length == 0) {
-                                $('#filter-list')
-                                    .append($('' +
-                                        '<div class="row hidden" data-level="' + idx + '">' +
-                                        '   <div class="col-md-2" style="padding: 8px 0px;">Level ' + idx + '</div>' +
-                                        '   <div class="col-md-10 domain-list">' +
-                                        (idx == 0 ?
-                                            '       <div class="col-md-2">' +
-                                            '           <button class="btn btn-info col-md-12" data-current-level="' + idx + '" style="margin-bottom: 4px;">' +
-                                            '               All' +
-                                            '           </button>' +
-                                            '       </div>' : "") +
-                                        '   </div>' +
-                                        '</div>')
-                                    );
+                if(site.ServerName) {
+                    var serverDomains = site.ServerName.split('.').reverse();
+                    $card = $('' +
+                        '<div class="card col-md-4" data-filters="' + getFilters(serverDomains, serverDomains.length-1) + '">' +
+                        '   <div class="card-block">' +
+                        '       <h4 class="card-title">' +
+                        '           ' + (site.ServerAlias ? site.ServerAlias : site.ServerName) +
+                        '       </h4>' +
+                        '       <p class="card-text">' +
+                        '' +
+                        '       </p>' +
+                        '       <pre>DocumentRoot:<br />' +
+                        '           ' + site.DocumentRoot +
+                        '       </pre>' +
+                        '       <pre>VirtualHost:<br />' +
+                        '           ' + site.VirtualHost.ip + ":" + site.VirtualHost.port +
+                        '       </pre>' +
+                        '       <pre>ServerName:<br />' +
+                        '           ' + site.ServerName +
+                        '       </pre>' +
+                        '       <a href="http://' + site.ServerName + '" target="_blank" class="btn btn-primary pull-right">' +
+                        '           Open <i class="fa fa-external-link" style="position: relative; top: -3px; font-size: 80%;" aria-hidden="true"></i>' +
+                        '       </a>' +
+                        '       <div class="clearfix"></div>' +
+                        '   </div>' +
+                        '</div>' +
+                        '');
+                    serverDomains = site.ServerName.split('.');
+                    if($(':contains("' + site.DocumentRoot + '")').length == 0) {
+                        $('#site-list')
+                            .append($card);
+                        serverDomains = serverDomains.reverse();
+                        $.each(serverDomains, function(idx, part) {
+                            if($('#filter-list .row[data-level=' + idx + '] button[value=' + part + ']').length == 0) {
+                                if($('#filter-list .row[data-level=' + idx + ']').length == 0) {
+                                    $('#filter-list')
+                                        .append($('' +
+                                            '<div class="row hidden" data-level="' + idx + '">' +
+                                            '   <div class="col-md-2" style="padding: 8px 0px;">Level ' + idx + '</div>' +
+                                            '   <div class="col-md-10 domain-list">' +
+                                            (idx == 0 ?
+                                                '       <div class="col-md-2">' +
+                                                '           <button class="btn btn-info col-md-12" data-current-level="' + idx + '" style="margin-bottom: 4px;">' +
+                                                '               All' +
+                                                '           </button>' +
+                                                '       </div>' : "") +
+                                            '   </div>' +
+                                            '</div>')
+                                        );
+                                }
+                                $('#filter-list .row[data-level=' + idx + '] div.domain-list')
+                                    .append('' +
+                                        '<div class="col-md-2">' +
+                                        '   <button class="btn btn-info col-md-12" data-current-level="' + idx + '" data-filters="' + getFilters(serverDomains, idx) + '" value="' + part + '" style="margin-bottom: 4px;">' +
+                                        '       ' + part + '' +
+                                        '   </button>' +
+                                        '</div>');
                             }
-                            $('#filter-list .row[data-level=' + idx + '] div.domain-list')
-                                .append('' +
-                                    '<div class="col-md-2">' +
-                                    '   <button class="btn btn-info col-md-12" data-current-level="' + idx + '" data-filters="' + getFilters(serverDomains, idx) + '" value="' + part + '" style="margin-bottom: 4px;">' +
-                                    '       ' + part + '' +
-                                    '   </button>' +
-                                    '</div>');
-                        }
-                    });
+                        });
+                    }
+                    $('#filter-list .row[data-level=0]').removeClass('hidden');
                 }
-                $('#filter-list .row[data-level=0]').removeClass('hidden');
             });
         }, "json");
         function getFilters(domainPart, max) {
