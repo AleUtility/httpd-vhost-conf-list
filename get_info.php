@@ -8,7 +8,7 @@
 
 define("HTTPD_VHOST_CONF_PATH", "/etc/apache2/sites-enabled/");
 
-if(isset($_COOKIE['password']) && $_COOKIE['password']=="p4ssw0rd") {
+// if(isset($_COOKIE['password']) && $_COOKIE['password']=="p4ssw0rd") {
     $count = 0;
     $content = [];
 
@@ -39,7 +39,7 @@ if(isset($_COOKIE['password']) && $_COOKIE['password']=="p4ssw0rd") {
             }
         }
     }
-}
+// }
 // echo '<pre>';
 // print_r($content);
 // echo '</pre>';
